@@ -6,14 +6,14 @@ def predict_video():
     WEIGHTS  = "./System/train_yolo11_final/weights/best.pt"
     VIDEO_IN = "./Demo/datatest/demo_video.mp4"
     CONF     = 0.5
-    DELAY    = 30    # ← tăng số này để chậm hơn (ms), 1=nhanh nhất, 60=khá chậm
+    DELAY    = 5   # the larger the slower th video is(ms), 1=fastest, 60=very slow
 
     model = YOLO(WEIGHTS)
     cap   = cv2.VideoCapture(VIDEO_IN)
 
-    # Resize xuống 720p để chạy mượt hơn
-    DISPLAY_W = 1920
-    DISPLAY_H = 1080
+    #Resolution
+    DISPLAY_W = 1280
+    DISPLAY_H = 720
 
     print("Playing... Press 'q' to quit.")
 
@@ -22,10 +22,10 @@ def predict_video():
         if not ret:
             break
 
-        # Resize trước khi predict → nhanh hơn nhiều
+        # Resize trước khi predict
         frame = cv2.resize(frame, (DISPLAY_W, DISPLAY_H))
 
-        results   = model.predict(frame, conf=CONF, verbose=False)[0]
+        results   = model.predict(frame, conf=CONF, verbose=False, device = 0)[0]  #Nếu k có gpu nvidia thì bỏ "device = 0" đi nha
         annotated = results.plot()
 
         cv2.imshow("GTSRB Detection", annotated)
